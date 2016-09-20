@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: lemp7_nginx_it
+    ports:
+      - 80:80
+    links:
+      - php
+    volumes:
+      - ./www:/var/www/html:ro
+      #- ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+  php:
+    build: ./php/
+    container_name: lemp7_php7_it
+    restart: always
+    volumes:
+      - ./www:/var/www/html
+    depends_on:
+      - mysql
+    links:
+      - mysql
+  mysql:
+    image: mysql:5.6
+    container_name: lemp7_mysql56_it
+    restart: always
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
